@@ -34,10 +34,7 @@ Remote shell Client-Server implementation in C
   <img src="https://user-images.githubusercontent.com/19291492/44955906-363dae80-aef6-11e8-9795-161a90f30b1e.png"/>
 </p>
 
-<p align="center">taken to [https://github.com/kusdavletov/](https://github.com/kusdavletov/socket-programming-simple-server-and-client)</p>
-
-### Preliminary knowledge before programming
-
+taken to [https://github.com/kusdavletov/](https://github.com/kusdavletov/socket-programming-simple-server-and-client)
 
 ## How to run
 1. Clone the repo
