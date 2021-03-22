@@ -8,7 +8,7 @@ Remote shell Client-Server implementation in C
 ## Features:
 1. Remote shell used for simulate core concepts of OS system calls
 2. server.c runs a process which listens on `localhost:###`
-   * `###` - correspond de tcp port used by server and client
+   * `###` - corresponds the tcp port used by server and client
 3. client.c runs a process to look for that socket address
 4. If the server is there and accepting, create a new socket connection
 5. The connection stays open indefinitely, until the client inputs `exit`
