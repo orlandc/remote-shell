@@ -7,41 +7,53 @@
 #include "leercadena.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/wait.h>
 #include <fcntl.h>
 
-#define MAX 80
+#define MAX 1024
 
 // Function designed for chat between client and server. 
-char func(int sockfd) 
-{ 
-    char buff[MAX]; 
-    char **vector;
-    int red=fork();
+char *func(int sockfd) { 
+    char buff[MAX];  
     bzero(buff,MAX);
-    TCP_Read_String(sockfd, buff, MAX); 
-    printf("Se leyo %s\n",buff);
-    vector = de_cadena_a_vector(buff);
-    if(red == 0){
-        int old_stdout = dup(1);
-        FILE *fp1= freopen("file.txt","a+",stdout);
-        if(execvp(vector[0],vector)<0)//{
-            printf("EXEC Failed\n");
-        fclose(stdout);
-        FILE *fp2 = fdopen(old_stdout, "w");
-        *stdout = *fp2;
-        exit(1);
+    char * response;
+    
+    response = malloc(sizeof(char)*MAX);
 
-    //  execvp(vector[0],vector);
-    //  execvp(buff,a);
-    //  perror ("failed execute command");  
-    }
-    return *buff;
+    TCP_Read_String(sockfd, buff, MAX); 
+    //printf("Se leyo %s\n",buff);
+
+    strcat(response, buff);
+
+    return response;
 } 
+
+void command_shell(char * buffed) {
+    char buffy[MAX];
+    bzero(buffy,MAX);
+    char **vector;
+    int child_pid;
+    FILE *stream;
+
+    vector = de_cadena_a_vector(buffed);
+    child_pid = fork();
+    
+    if(child_pid == 0) {
+        printf("\n");
+        if((stream = freopen("1.txt", "w", stdout)) == NULL){
+            exit(1);
+        }
+        execvp(vector[0],vector);
+        printf("\n");
+        vector = NULL;
+  		printf("Error in excuting the command- please make sure you type the right syntax.\n");
+        exit(1);
+    }
+}
 
 
 // Driver function 
-int main(int argc, char *argv[]) 
-{ 
+int main(int argc, char *argv[]) {
     int socket, connfd;  
     int puerto;
 
@@ -55,12 +67,15 @@ int main(int argc, char *argv[])
     socket = TCP_Server_Open(puerto);
     connfd = TCP_Accept(socket);
     while(1){
-        char resultado= func(connfd);
-        if (resultado == 101 || resultado == 0){
+        char * resultado = func(connfd);
+        // printf("Se leyo %s\n", *resultado);
+        if (*resultado == 101 || *resultado == 0){
             printf("Fin de la conexion \n");
             break;
+        } else {
+            command_shell(resultado);
         }
     }
-    // After chatting close the socket 
+
     close(socket); 
 } 

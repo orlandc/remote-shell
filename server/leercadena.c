@@ -41,7 +41,7 @@ char** de_cadena_a_vector(char* cadena) {
     cad_longitud = strlen(token) + 1;
     // Copiar token en la posicion 'i'
     resultado[i] = strdup(token);
-    printf("|%s|\n",resultado[i]); fflush(stdout);
+    // printf("|%s|\n",resultado[i]); fflush(stdout);
     // En busca de la proxima cadena
     token = strtok(NULL, delim);
     i++;
