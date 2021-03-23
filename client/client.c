@@ -5,12 +5,16 @@
 #include <assert.h>
 #include "tcp.h"
 #include "leercadena.h"
-
+ 
+ //funcion func envia el comando escrito en pantalla
 void func(int sockfd,char* comando) 
 { 
     char *buff = comando + '\x0'; 
     TCP_Write_String(sockfd, buff); 
 } 
+
+// requestFile es la funcion que recibe la respuesta del servidor
+// contenida en el archivo 1.txt
 void requestFile(int sockfd){
     while(1){
         FILE *fptr; 
@@ -41,7 +45,9 @@ void requestFile(int sockfd){
         }
     }
 }
-
+// Funcion principal
+// La fp espera que se digite un comando en pantalla para 
+// enviarlo por socket
 int main(int argc, char* argv[]) 
 { 
     int sockfd, port; 
